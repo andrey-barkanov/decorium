@@ -1,6 +1,6 @@
 import { performance } from 'perf_hooks';
 
-interface HistoryShape {
+export interface HistoryShape {
   callCount: number;
   average: number;
   entries: { took: number; date: Date; }[];
