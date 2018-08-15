@@ -1,36 +1,46 @@
 import { performance } from 'perf_hooks';
 
-//
-// TODO: cache execution time measures, calculate average, compare current with average.
-//
+interface HistoryShape {
+  callCount: number;
+  average: number;
+  entries: { took: number; date: Date; }[];
+}
 
-export const executionTime = (routine: Function, label?: string) => {
-  return function (this: any, ...args: any[]) {
-    const name = label || routine.name;
-    const t1 = performance.now();
-    const result = routine.apply(this, args);
+interface ExecutionTimeMeasuredFunction extends Function {
+  history?: HistoryShape;
+}
 
-    const functionInstance = executionTime as any;
+export const executionTime =
+  (routine: Function, label?: string): ExecutionTimeMeasuredFunction => {
+    const wrapped: ExecutionTimeMeasuredFunction =
+      function (this: any) {
+        const name = label || routine.name;
+        const t1 = performance.now();
+        const result = routine.apply(this, arguments);
+        const t2 = performance.now() - t1;
 
-    if (!functionInstance.cache) {
-      functionInstance.cache = {
-        callCount: 0,
-        average: 0,
-      };
-    }
+        if (!wrapped.history) {
+          wrapped.history = {
+            callCount: 0,
+            average: 0,
+            entries: [],
+          };
+        }
 
-    const t2 = performance.now() - t1;
-    const average = functionInstance.cache.callCount === 0 ?
-      t2 :
-      ((functionInstance.cache.average / functionInstance.cache.callCount) + t2) / 2;
+        wrapped.history.callCount += 1;
+        wrapped.history.entries.push({ took: t2, date: new Date() });
 
-    functionInstance.cache.average = average;
-    functionInstance.cache.callCount += 1;
+        const average = wrapped.history.average =
+          wrapped.history.entries.reduce((sum, item) => sum + item.took, 0) /
+          wrapped.history.callCount;
 
-    console.log(
-      `[${name}]: execution took ${(t2).toFixed(2)}ms,` +
-      ` average is ${average.toFixed(2)}ms.`);
+        console.log(
+          `[${name}]: execution took ${(t2).toFixed(2)}ms,` +
+          ` average is ${average.toFixed(2)}ms, history: ${wrapped.history.entries.length} items.`);
 
-    return result;
+        return result;
+      }
+    ;
+
+    return wrapped;
   };
-};

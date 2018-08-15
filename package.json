@@ -1,12 +1,12 @@
 {
   "name": "decorium",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Some useful JS functions decorators.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
     "lint": "tslint --fix --project ./",
+    "build": "npm run lint && tsc",
     "test": "mocha --reporter spec"
   },
   "repository": {
