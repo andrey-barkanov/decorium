@@ -6,8 +6,8 @@ interface HistoryShape {
         date: Date;
     }[];
 }
-interface ExecutionTimeMeasuredFunction extends Function {
+export interface TimeMeasuredFunction extends Function {
     history?: HistoryShape;
 }
-export declare const executionTime: (routine: Function, label?: string | undefined) => ExecutionTimeMeasuredFunction;
+export declare const executionTime: (routine: Function, label?: string | undefined) => TimeMeasuredFunction;
 export {};

@@ -6,13 +6,13 @@ interface HistoryShape {
   entries: { took: number; date: Date; }[];
 }
 
-interface ExecutionTimeMeasuredFunction extends Function {
+export interface TimeMeasuredFunction extends Function {
   history?: HistoryShape;
 }
 
 export const executionTime =
-  (routine: Function, label?: string): ExecutionTimeMeasuredFunction => {
-    const wrapped: ExecutionTimeMeasuredFunction =
+  (routine: Function, label?: string): TimeMeasuredFunction => {
+    const wrapped: TimeMeasuredFunction =
       function (this: any) {
         const name = label || routine.name;
         const t1 = performance.now();
@@ -39,8 +39,7 @@ export const executionTime =
           ` average is ${average.toFixed(2)}ms, history: ${wrapped.history.entries.length} items.`);
 
         return result;
-      }
-    ;
+      };
 
     return wrapped;
   };
