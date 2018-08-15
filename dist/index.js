@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var executionTime = function (routine, label) {
+exports.executionTime = function (routine, label) {
     return function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -12,7 +12,4 @@ var executionTime = function (routine, label) {
         console.timeEnd(nowLabel);
         return result;
     };
-};
-exports.default = {
-    executionTime: executionTime,
 };
